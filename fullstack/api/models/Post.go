@@ -5,6 +5,8 @@ import (
 	"html"
 	"strings"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 type Post struct {
@@ -17,6 +19,7 @@ type Post struct {
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
+// Prepare : Function name self-explanatory
 func (p *Post) Prepare() {
 	p.ID = 0
 	p.Title = html.EscapeString(strings.TrimSpace(p.Title))
@@ -26,6 +29,7 @@ func (p *Post) Prepare() {
 	p.UpdatedAt = p.CreatedAt
 }
 
+// Validate : Function name self-explanatory
 func (p *Post) Validate() error {
 	if p.Title == "" {
 		return errors.New("Required Title")
@@ -39,32 +43,34 @@ func (p *Post) Validate() error {
 	return nil
 }
 
-func (p *Post) SavePost(db *gorm.DB) (*Post, error){
+// SavePost : Function name self-explanatory
+func (p *Post) SavePost(db *gorm.DB) (*Post, error) {
 	var err error
 	err = db.Debug().Model(&Post{}).Create(&p).Error
-	if err != nil{
+	if err != nil {
 		return &Post{}, err
 	}
-	if p.ID != 0{
+	if p.ID != 0 {
 		err = db.Debug().Model(&User{}).Where("id = ?", p.AuthorID).Take(&p.Author).Error
-		if err != nil{
+		if err != nil {
 			return &Post{}, err
 		}
 	}
 	return p, nil
 }
 
-func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error){
+// FindAllPosts : Function name self-explanatory
+func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 	var err error
 	posts := []Post{}
 	err = db.Debug().Model(&Post{}).Limit(100).Find(&posts).Error
-	if err != nil{
+	if err != nil {
 		return &[]Post{}, err
 	}
-	if len(posts) > 0{
-		for i, _ := range posts{
+	if len(posts) > 0 {
+		for i, _ := range posts {
 			err := db.Debug().Model(&User{}).Where("id = ?", posts[i].AuthorID).Take(&posts[i].Author).Error
-			if err != nil{
+			if err != nil {
 				return &[]Post{}, err
 			}
 		}
@@ -72,25 +78,43 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error){
 	return &posts, nil
 }
 
-func (p *Post) FindPostByID(db *gorm.DB) (*Post, error){
+// FindPostByID : Function name self-explanatory
+func (p *Post) FindPostByID(db *gorm.DB, pid uint64) (*Post, error) {
 	var err error
-	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{Title: p.Title, Content: p.Content, UpdatedAt: time.Now()}).Error
-	if err != nil{
+	err = db.Debug().Model(&Post{}).Where("id = ?", pid).Updates(Post{Title: p.Title, Content: p.Content, UpdatedAt: time.Now()}).Error
+	if err != nil {
 		return &Post{}, nil
 	}
-	if p.ID != 0{
+	if p.ID != 0 {
 		err = db.Debug().Model(&User{}).Where("id = ?", p.AuthorID).Take(&p.Author).Error
-		if err != nil{
+		if err != nil {
 			return &Post{}, err
 		}
 	}
 	return p, nil
 }
 
-func (p *Post) DeleteAPost(db *gorm.DB, pid uint64, uid uint32) (int64, error){
+// UpdateAPost : Function name self-explanatory
+func (p *Post) UpdateAPost(db *gorm.DB) (*Post, error) {
+	var err error
+	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{Title: p.Title, Content: p.Content, UpdatedAt: time.Now()}).Error
+	if err != nil {
+		return &Post{}, err
+	}
+	if p.ID != 0 {
+		err = db.Debug().Model(&User{}).Where("id = ?", p.AuthorID).Take(&p.Author).Error
+		if err != nil {
+			return &Post{}, err
+		}
+	}
+	return p, nil
+}
+
+// DeleteAPost : Function name self-explanatory
+func (p *Post) DeleteAPost(db *gorm.DB, pid uint64, uid uint32) (int64, error) {
 	db = db.Debug().Model(&Post{}).Where("id = ? and author_id = ?", pid, uid).Take(&Post{}).Delete(&Post{})
-	if db.Error != nil{
-		if gorm.IsRecordNotFoundError(db.Error){
+	if db.Error != nil {
+		if gorm.IsRecordNotFoundError(db.Error) {
 			return 0, errors.New("Post not found")
 		}
 		return 0, db.Error

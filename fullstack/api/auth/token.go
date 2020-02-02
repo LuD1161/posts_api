@@ -27,6 +27,7 @@ func CreateToken(user_id uint32) (string, error) {
 // TokenValid : Check Token's Validity
 func TokenValid(r *http.Request) error {
 	tokenString := ExtractToken(r)
+	fmt.Println("tokenString : ", tokenString)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -34,6 +35,7 @@ func TokenValid(r *http.Request) error {
 		return []byte(os.Getenv("API_SECRET")), nil
 	})
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -50,8 +52,8 @@ func ExtractToken(r *http.Request) string {
 		return token
 	}
 	bearerToken := r.Header.Get("Authorization")
-	if len(strings.Split(bearerToken, "")) == 2 {
-		return strings.Split(bearerToken, "")[1]
+	if len(strings.Split(bearerToken, " ")) == 2 {
+		return strings.Split(bearerToken, " ")[1]
 	}
 	return ""
 }
