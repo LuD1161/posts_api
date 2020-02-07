@@ -1,0 +1,301 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/user/{id}": {
+      "get": {
+        "description": "Return user details",
+        "tags": [
+          "users"
+        ],
+        "summary": "Returns user details",
+        "operationId": "GetUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "user id",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/userResp"
+          },
+          "404": {
+            "$ref": "#/responses/notFound"
+          }
+        }
+      },
+      "put": {
+        "description": "Update user details",
+        "tags": [
+          "users"
+        ],
+        "summary": "Update user details",
+        "operationId": "UpdateUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "email to update",
+            "name": "email",
+            "in": "body"
+          },
+          {
+            "type": "string",
+            "description": "password to update",
+            "name": "password",
+            "in": "body"
+          },
+          {
+            "type": "string",
+            "description": "nickname to update",
+            "name": "nickname",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/userResp"
+          },
+          "404": {
+            "$ref": "#/responses/notFound"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete user details",
+        "tags": [
+          "users"
+        ],
+        "summary": "Delete user details",
+        "operationId": "DeleteUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "user id",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {},
+          "404": {
+            "$ref": "#/responses/notFound"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "id": {
+          "type": "integer",
+          "format": "uint32",
+          "x-go-name": "ID"
+        },
+        "nickname": {
+          "type": "string",
+          "x-go-name": "Nickname"
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        }
+      },
+      "x-go-package": "github.com/LuD1161/posts_api/fullstack/api/models"
+    }
+  },
+  "responses": {
+    "badReq": {
+      "description": "Error Bad Request",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 400 - Status Bad Request",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "bool": {
+      "description": "Boolean response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP Status Code 200",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "data": {
+            "description": "Boolean true/false",
+            "type": "boolean",
+            "x-go-name": "Data"
+          }
+        }
+      }
+    },
+    "conflict": {
+      "description": "Error Conflict",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 409 - Conflict",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "forbidden": {
+      "description": "Error Forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 403 - Forbidden",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "internal": {
+      "description": "Error Interval Server",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 500 - Internal server error",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "notFound": {
+      "description": "Error Not Found",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "x-go-name": "Message",
+            "example": "record not found"
+          }
+        }
+      }
+    },
+    "ok": {
+      "description": "Success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP Status Code 200",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          }
+        }
+      }
+    },
+    "userResp": {
+      "description": "HTTP status code 200 and user model in data",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "x-go-name": "CreatedAt"
+          },
+          "email": {
+            "type": "string",
+            "x-go-name": "Email"
+          },
+          "id": {
+            "type": "integer",
+            "format": "uint32",
+            "x-go-name": "ID"
+          },
+          "nickname": {
+            "type": "string",
+            "x-go-name": "Nickname"
+          },
+          "password": {
+            "type": "string",
+            "x-go-name": "Password"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "x-go-name": "UpdatedAt"
+          }
+        }
+      }
+    },
+    "usersResp": {
+      "description": "HTTP status code 200 and an array of user models in data",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "HTTP status code 200 - Status OK\nCode int `json:\"code\"`\nArray of user models",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/User"
+            },
+            "x-go-name": "Data"
+          }
+        }
+      }
+    }
+  }
+}

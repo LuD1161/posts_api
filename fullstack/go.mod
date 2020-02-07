@@ -8,7 +8,7 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/jinzhu/gorm v1.9.12
 	github.com/joho/godotenv v1.3.0
-	github.com/stretchr/testify v1.4.0
+	github.com/rakyll/statik v0.1.6
 	golang.org/x/crypto v0.0.0-20200128174031-69ecbb4d6d5d
 	gopkg.in/go-playground/assert.v1 v1.2.1
 )

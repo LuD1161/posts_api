@@ -1,0 +1,237 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  User:
+    properties:
+      created_at:
+        format: date-time
+        type: string
+        x-go-name: CreatedAt
+      email:
+        type: string
+        x-go-name: Email
+      id:
+        format: uint32
+        type: integer
+        x-go-name: ID
+      nickname:
+        type: string
+        x-go-name: Nickname
+      password:
+        type: string
+        x-go-name: Password
+      updated_at:
+        format: date-time
+        type: string
+        x-go-name: UpdatedAt
+    type: object
+    x-go-package: github.com/LuD1161/posts_api/fullstack/api/models
+info:
+  contact:
+    email: theOneNotToBeNamed@voldemort.com
+    name: Anon
+  description: This documentation describes TNBT APIs
+  license:
+    name: Closed
+  title: Golang SwaggerUI for TNBT
+  version: "0.1"
+paths:
+  /user/{id}:
+    delete:
+      description: Delete user details
+      operationId: DeleteUser
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204": {}
+        "404":
+          $ref: '#/responses/notFound'
+      summary: Delete user details
+      tags:
+      - users
+    get:
+      description: Return user details
+      operationId: GetUser
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          $ref: '#/responses/userResp'
+        "404":
+          $ref: '#/responses/notFound'
+      summary: Returns user details
+      tags:
+      - users
+    put:
+      description: Update user details
+      operationId: UpdateUser
+      parameters:
+      - description: email to update
+        in: body
+        name: email
+        type: string
+      - description: password to update
+        in: body
+        name: password
+        type: string
+      - description: nickname to update
+        in: body
+        name: nickname
+        type: string
+      responses:
+        "200":
+          $ref: '#/responses/userResp'
+        "404":
+          $ref: '#/responses/notFound'
+      summary: Update user details
+      tags:
+      - users
+produces:
+- application/json
+responses:
+  badReq:
+    description: Error Bad Request
+    schema:
+      properties:
+        code:
+          description: HTTP status code 400 - Status Bad Request
+          format: int64
+          type: integer
+          x-go-name: Code
+        message:
+          description: Detailed error message
+          type: string
+          x-go-name: Message
+      type: object
+  bool:
+    description: Boolean response
+    schema:
+      properties:
+        code:
+          description: HTTP Status Code 200
+          format: int64
+          type: integer
+          x-go-name: Code
+        data:
+          description: Boolean true/false
+          type: boolean
+          x-go-name: Data
+      type: object
+  conflict:
+    description: Error Conflict
+    schema:
+      properties:
+        code:
+          description: HTTP status code 409 - Conflict
+          format: int64
+          type: integer
+          x-go-name: Code
+        message:
+          description: Detailed error message
+          type: string
+          x-go-name: Message
+      type: object
+  forbidden:
+    description: Error Forbidden
+    schema:
+      properties:
+        code:
+          description: HTTP status code 403 - Forbidden
+          format: int64
+          type: integer
+          x-go-name: Code
+        message:
+          description: Detailed error message
+          type: string
+          x-go-name: Message
+      type: object
+  internal:
+    description: Error Interval Server
+    schema:
+      properties:
+        code:
+          description: HTTP status code 500 - Internal server error
+          format: int64
+          type: integer
+          x-go-name: Code
+        message:
+          description: Detailed error message
+          type: string
+          x-go-name: Message
+      type: object
+  notFound:
+    description: Error Not Found
+    schema:
+      properties:
+        error:
+          example: record not found
+          type: string
+          x-go-name: Message
+      type: object
+  ok:
+    description: Success response
+    schema:
+      properties:
+        code:
+          description: HTTP Status Code 200
+          format: int64
+          type: integer
+          x-go-name: Code
+      type: object
+  userResp:
+    description: HTTP status code 200 and user model in data
+    schema:
+      properties:
+        created_at:
+          format: date-time
+          type: string
+          x-go-name: CreatedAt
+        email:
+          type: string
+          x-go-name: Email
+        id:
+          format: uint32
+          type: integer
+          x-go-name: ID
+        nickname:
+          type: string
+          x-go-name: Nickname
+        password:
+          type: string
+          x-go-name: Password
+        updated_at:
+          format: date-time
+          type: string
+          x-go-name: UpdatedAt
+      type: object
+  usersResp:
+    description: HTTP status code 200 and an array of user models in data
+    schema:
+      properties:
+        data:
+          description: |-
+            HTTP status code 200 - Status OK
+            Code int `json:"code"`
+            Array of user models
+          items:
+            $ref: '#/definitions/User'
+          type: array
+          x-go-name: Data
+      type: object
+schemes:
+- http
+securityDefinitions:
+  bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,23 @@
+basePath: /
+consumes:
+- application/json
+info:
+  contact:
+    email: theOneNotToBeNamed@voldemort.com
+    name: Anon
+  description: This documentation describes TNBT APIs
+  license:
+    name: Closed
+  title: Golang SwaggerUI for TNBT
+  version: "0.1"
+paths: {}
+produces:
+- application/json
+schemes:
+- http
+securityDefinitions:
+  bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

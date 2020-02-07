@@ -81,7 +81,7 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 // FindPostByID : Function name self-explanatory
 func (p *Post) FindPostByID(db *gorm.DB, pid uint64) (*Post, error) {
 	var err error
-	err = db.Debug().Model(&Post{}).Where("id = ?", pid).Updates(Post{Title: p.Title, Content: p.Content, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(&Post{}).Where("id = ?", pid).Take(&p).Error
 	if err != nil {
 		return &Post{}, nil
 	}

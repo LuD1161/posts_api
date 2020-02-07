@@ -13,7 +13,8 @@ import (
 	"gopkg.in/go-playground/assert.v1"
 )
 
-func TestSign(t *testing.T) {
+func TestSignIn(t *testing.T) {
+
 	err := refreshUserTable()
 	if err != nil {
 		log.Fatal(err)
@@ -30,21 +31,23 @@ func TestSign(t *testing.T) {
 	}{
 		{
 			email:        user.Email,
-			password:     "password",
+			password:     "password", //Note the password has to be this, not the hashed one from the database
 			errorMessage: "",
 		},
 		{
 			email:        user.Email,
 			password:     "Wrong password",
-			errorMessage: "crypto/bcrypt: hashedPassword is not the hash of the given password"},
+			errorMessage: "crypto/bcrypt: hashedPassword is not the hash of the given password",
+		},
 		{
-			email:        user.Email,
+			email:        "Wrong email",
 			password:     "password",
 			errorMessage: "record not found",
 		},
 	}
 
 	for _, v := range samples {
+
 		token, err := server.SignIn(v.email, v.password)
 		if err != nil {
 			assert.Equal(t, err, errors.New(v.errorMessage))
@@ -55,7 +58,9 @@ func TestSign(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
+
 	refreshUserTable()
+
 	_, err := seedOneUser()
 	if err != nil {
 		fmt.Printf("This is the error %v\n", err)
